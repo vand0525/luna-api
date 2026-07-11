@@ -2,6 +2,7 @@ import * as DTO from "./stories.dto";
 import * as gemini from "../../shared/gemini.service";
 import * as elevenlabs from "../../shared/elevenlabs.service";
 import * as spaces from "../../shared/spaces.service";
+import * as agents from "./stories.agents";
 import type { StoryGeneration } from "./stories.types";
 import { parseBuffer, getSupportedMimeTypes } from "music-metadata";
 
@@ -17,7 +18,7 @@ export async function generate(
   body: DTO.GenerateRequest
 ): Promise<DTO.GenerateResponse> {
   // get script from gemini
-  const { title, story } = await simpleGeneration(body);
+  const { title, story } = await orchestratedGeneration(body);
 
   if (process.env.NODE_ENV === "development") {
     console.info(
@@ -32,7 +33,7 @@ export async function generate(
     audioBuffer,
     {
       mimeType: "audio/mpeg",
-      path: "audio.mp3", // 
+      path: "audio.mp3", //
     },
     { duration: true }
   );
@@ -67,14 +68,33 @@ async function simpleGeneration({
     Length: ${lengthToWordCount[length]}, 
   `;
 
-  return await gemini.completion(systemInstruction, contents);
+  return await gemini.completion<StoryGeneration>(systemInstruction, contents, {
+    type: "object",
+    properties: {
+      title: {
+        type: "string",
+      },
+      story: {
+        type: "string",
+      },
+    },
+    required: ["title", "story"],
+    additionalProperties: false,
+  });
 }
 
 // orchestrated generation
-async function orchestratedGeneration({
-  topic,
-  mood,
-  length,
-}: DTO.GenerateRequest): Promise<string> {
-  return "Placeholder";
+export async function orchestratedGeneration(
+  body: DTO.GenerateRequest
+): Promise<StoryGeneration> {
+  const outline = await agents.outliner(body);
+
+  const [characters, setting] = await Promise.all([
+    agents.characterDesigner(body, outline),
+    agents.settingDesigner(body, outline),
+  ]);
+
+  const story = await agents.finalWriter(body, outline, characters, setting);
+
+  return agents.toneAnnotator(body, story);
 }
