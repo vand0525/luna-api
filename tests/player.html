@@ -1,82 +1,102 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Bedtime Story Test</title>
-</head>
-<body>
+  </head>
+  <body>
     <h2>Bedtime Story API Test</h2>
 
     <label>
-        Topic:
-        <input id="topic" value="Dinosaurs">
+      Topic:
+      <input
+        id="topic"
+        value="Dinosaurs"
+      />
     </label>
 
-    <br><br>
+    <br /><br />
 
     <label>
-        Mood:
-        <input id="mood" value="Calm">
+      Mood:
+      <input
+        id="mood"
+        value="Calm"
+      />
     </label>
 
-    <br><br>
+    <br /><br />
 
     <label>
-        Length:
-        <input id="length" value="short">
+      Length:
+      <select id="length">
+        <option value="short">Short</option>
+        <option value="medium">Medium</option>
+        <option value="long">Long</option>
+      </select>
     </label>
 
-    <br><br>
+    <br /><br />
 
     <button id="generate">Generate Story</button>
 
-    <br><br>
+    <br /><br />
 
-    <audio id="player" controls></audio>
+    <h3 id="title"></h3>
+    <p id="story"></p>
+    <p id="duration"></p>
+
+    <audio
+      id="player"
+      controls
+    ></audio>
 
     <script>
-        document.getElementById("generate").onclick = async () => {
-            const topic = document.getElementById("topic").value;
-            const mood = document.getElementById("mood").value;
-            const length = document.getElementById("length").value;
+      document.getElementById("generate").onclick = async () => {
+        const topic = document.getElementById("topic").value;
+        const mood = document.getElementById("mood").value;
+        const length = document.getElementById("length").value;
 
-            const button = document.getElementById("generate");
-            button.disabled = true;
-            button.textContent = "Generating...";
+        const button = document.getElementById("generate");
+        const player = document.getElementById("player");
 
-            try {
-                const res = await fetch("http://localhost:3000/stories/generate", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        topic,
-                        mood,
-                        length,
-                    }),
-                });
+        button.disabled = true;
+        button.textContent = "Generating...";
 
-                if (!res.ok) {
-                    throw new Error(await res.text());
-                }
+        try {
+          const res = await fetch("http://localhost:3000/stories/generate", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              topic,
+              mood,
+              length,
+            }),
+          });
 
-                const blob = await res.blob();
+          if (!res.ok) {
+            throw new Error(await res.text());
+          }
 
-                const url = URL.createObjectURL(blob);
+          const data = await res.json();
 
-                const player = document.getElementById("player");
-                player.src = url;
-                player.play();
+          document.getElementById("title").textContent = data.title;
+          document.getElementById("story").textContent = data.story;
+          document.getElementById("duration").textContent =
+            `Duration: ${data.durationSeconds} seconds`;
 
-            } catch (err) {
-                console.error(err);
-                alert(err.message);
-            } finally {
-                button.disabled = false;
-                button.textContent = "Generate Story";
-            }
-        };
+          player.src = data.audioUrl;
+          await player.play();
+        } catch (err) {
+          console.error(err);
+          alert(err instanceof Error ? err.message : "Something went wrong");
+        } finally {
+          button.disabled = false;
+          button.textContent = "Generate Story";
+        }
+      };
     </script>
-</body>
+  </body>
 </html>

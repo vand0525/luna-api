@@ -18,7 +18,7 @@ function enumValidator(field: string, value: string, values: readonly string[]):
 }
 
 // generate
-export function generate(body: any): DTO.GeneratePrompt {
+export function generate(body: any): DTO.GenerateRequest {
   const {topic, mood, length} = body;
 
   // topic

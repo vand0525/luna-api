@@ -8,16 +8,8 @@ const router = Router();
 router.post("/generate", async (req, res, next) => {
   try {
     const validated = validate.generate(req.body);
-
-    const audioStream = await service.generate(validated);
-
-    res.setHeader("Content-Type", "audio/mpeg");
-
-    for await (const chunk of audioStream){
-      res.write(chunk)
-    }
-
-    res.end()
+    const story = await service.generate(validated);
+    res.status(201).json(story); 
   } catch (e) {
     next(e);
   }
