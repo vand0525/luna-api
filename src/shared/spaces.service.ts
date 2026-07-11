@@ -11,15 +11,7 @@ const spaces = new S3Client({
   },
 });
 
-export async function upload(audioStream: Readable): Promise<string> {
-  const chunks: Buffer[] = [];
-
-  for await (const chunk of audioStream) {
-    chunks.push(Buffer.from(chunk));
-  }
-
-  const audioBuffer = Buffer.concat(chunks);
-
+export async function upload(audioBuffer: Buffer): Promise<string> {
   const prefix = process.env.NODE_ENV === "development" ? "luna-dev" : "luna";
   const key = `${prefix}/${crypto.randomUUID()}.mp3`;
 
