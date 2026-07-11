@@ -19,7 +19,7 @@ function enumValidator(field: string, value: string, values: readonly string[]):
 
 // generate
 export function generate(body: any): DTO.GenerateRequest {
-  const {topic, mood, length} = body;
+  const {topic, mood, narratorType, length} = body;
 
   // topic
   typeValidator('topic', topic, 'string');
@@ -29,6 +29,10 @@ export function generate(body: any): DTO.GenerateRequest {
   typeValidator('mood', mood, 'string');
   lengthValidator('mood', mood, 3, 50);
 
+  // narrator type
+  typeValidator("narratorType", narratorType, "string");
+  enumValidator("narratorType", narratorType, DTO.NARRATOR_TYPES);
+
   // length
   typeValidator("length", length, "string");
   enumValidator("length", length, DTO.LENGTHS);
@@ -36,6 +40,7 @@ export function generate(body: any): DTO.GenerateRequest {
   return {
     topic: topic.trim(),
     mood: mood.trim(),
+    narratorType,
     length
   }
 }

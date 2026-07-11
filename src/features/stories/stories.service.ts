@@ -27,7 +27,7 @@ export async function generate(
   }
 
   // get audio from elevenlabs
-  const audioBuffer = await elevenlabs.generate(story);
+  const audioBuffer = await elevenlabs.generate(story, body.narratorType);
 
   const metadata = await parseBuffer(
     audioBuffer,

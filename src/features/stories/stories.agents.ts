@@ -194,12 +194,8 @@ export async function toneAnnotator(
 
   const contents = `
     Requested mood: ${request.mood}
-
-    Title:
-    ${story.title}
-
-    Story:
-    ${story.story}
+    Title: ${story.title}
+    Story: ${story.story}
   `;
 
   return gemini.completion<TYPES.StoryGeneration>(systemInstruction, contents, {

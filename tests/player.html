@@ -28,6 +28,24 @@
     <br /><br />
 
     <label>
+      Narrator:
+
+      <select id="narratorType">
+        <option value="adaptive">Adaptive</option>
+
+        <option value="default">Default</option>
+
+        <option value="warm">Warm</option>
+
+        <option value="soft">Soft</option>
+
+        <option value="deep">Deep</option>
+      </select>
+    </label>
+
+    <br /><br />
+
+    <label>
       Length:
       <select id="length">
         <option value="short">Short</option>
@@ -55,6 +73,7 @@
       document.getElementById("generate").onclick = async () => {
         const topic = document.getElementById("topic").value;
         const mood = document.getElementById("mood").value;
+        const narratorType = document.getElementById("narratorType").value;
         const length = document.getElementById("length").value;
 
         const button = document.getElementById("generate");
@@ -72,6 +91,7 @@
             body: JSON.stringify({
               topic,
               mood,
+              narratorType,
               length,
             }),
           });
