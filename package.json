@@ -7,7 +7,7 @@
     "dev": "tsx watch src/server.ts",
     "player": "open tests/player.html",
     "build": "tsc",
-    "start": "node src/server.ts",
+    "start": "node dist/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Theo",
