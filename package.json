@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "player": "open tests/player.html",
-    "build": "tsc",
+    "build": "tsup src/server.ts --format esm --out-dir dist",
     "start": "node dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -25,6 +25,7 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^26.1.1",
+    "tsup": "^8.5.1",
     "tsx": "^4.23.0",
     "typescript": "^7.0.2"
   }
