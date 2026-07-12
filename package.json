@@ -7,7 +7,7 @@
     "dev": "tsx watch src/server.ts",
     "player": "open tests/player.html",
     "build": "tsup src/server.ts --format esm --out-dir dist",
-    "start": "node dist/server.js",
+    "start": "node dist/server.mjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Theo",
